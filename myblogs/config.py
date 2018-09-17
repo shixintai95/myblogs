@@ -21,4 +21,5 @@ settings = {
     "cookie_secret": "NwbmfWPOQiGduwgftJRme98bbzWPREStp5WR5cm3hoI=",
     "debug": True,
     "login_url": "/login",
+    "xsrf_cookies": True,
 }

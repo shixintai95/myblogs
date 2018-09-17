@@ -17,7 +17,7 @@ class Application(Application):
             (r"/home", index.HomeHandler),
             (r"/release", index.ReleaseHandler),
             (r"/showblogs", index.ShowBlogsHandler),
-            (r"/(.*)$", web.StaticFileHandler,
+            (r"/(.*)$", index.StaticFileHandler,
              {"path": os.path.join(config.BASE_PATH, "static/html"),
               "default_filename": "index.html"})
         ]

@@ -4,6 +4,12 @@ from tornado.web import RequestHandler
 import model
 
 
+class StaticFileHandler(web.StaticFileHandler):
+    def __init__(self, application, request, **kwargs):
+        super().__init__(application, request, **kwargs)
+        self.xsrf_token
+
+
 # 登录
 class LoginHandler(RequestHandler):
 
@@ -18,7 +24,7 @@ class LoginHandler(RequestHandler):
         else:
             flag = ""
         url = "login?next=%s" % next
-        self.render("login/login.html", flag=flag, url=url)
+        self.render("login/login.html", flag=flag, url=url, title="登录")
 
     def post(self, *args, **kwargs):
         username = self.get_body_argument("username")
@@ -42,7 +48,7 @@ class LoginHandler(RequestHandler):
 # 注册
 class RegisterHandler(RequestHandler):
     def get(self, *args, **kwargs):
-        self.render("login/register.html")
+        self.render("login/register.html", title="注册")
 
     def post(self, *args, **kwargs):
         username = self.get_body_argument("username")
@@ -50,7 +56,6 @@ class RegisterHandler(RequestHandler):
         user = model.User(username, password, 1)
         result = user.save()
         if result == 1:
-            self.write("注册成功")
             self.redirect("/login")
         else:
             self.write("注册失败,请重新注册")
@@ -60,14 +65,14 @@ class RegisterHandler(RequestHandler):
 # 注销
 class LogoutHandler(RequestHandler):
     def get(self, *args, **kwargs):
-        self.clear_cookie("username")
+        self.clear_all_cookies()
         self.redirect("/login")
 
 
 # 主页
 class HomeHandler(RequestHandler):
     def get(self, *args, **kwargs):
-        self.render("login/home.html", username=self.get_secure_cookie("username"))
+        self.render("login/home.html", title="主页", username=self.get_secure_cookie("username"))
 
 
 # 发布博客
@@ -79,7 +84,7 @@ class ReleaseHandler(RequestHandler):
     # 3.执行方法get_current_user(),若返回true，则进入请求; 否则进入全局配置的地址
     @web.authenticated
     def get(self, *args, **kwargs):
-        self.render("release/release.html")
+        self.render("release/release.html", title="发布博客")
 
     def post(self, *args, **kwargs):
         blog_title = self.get_argument("blog_title")
@@ -106,7 +111,7 @@ class ShowBlogsHandler(RequestHandler):
         blog = model.Blog()
         blog_list = blog.select_all(uname=str(username)[2:-1])
         print(blog_list)
-        self.render("release/show.html", blog_list=blog_list)
+        self.render("release/show.html", blog_list=blog_list, title="查看博客")
 
     def get_current_user(self):
         cookie = self.get_secure_cookie("username")

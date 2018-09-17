@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>显示博客</title>
-</head>
-<body>
+{% extends "../base.html"%}
 
+{% block main %}
 <ul>
     {% if blog_list %}
         {% for item in blog_list %}
@@ -15,5 +10,4 @@
         {% end %}
     {% end %}
 </ul>
-</body>
-</html>
+{% end %}
