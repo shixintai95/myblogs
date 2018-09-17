@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示博客</title>
+</head>
+<body>
+
+<ul>
+    {% if blog_list %}
+        {% for item in blog_list %}
+        <li>标题：{{item["blog_title"]}}<br>
+        类型：{{item["blog_type"]}}<br>
+        内容：{{item["blog_content"]}}</li>
+        {% end %}
+    {% end %}
+</ul>
+</body>
+</html>
