@@ -12,12 +12,12 @@ class ORM:
             if isinstance(value, str):
                 values_str += ("'" + value + "',")
             else:
-                values_str += (value + ",")
+                values_str += (str(value) + ",")
         fields_str = fields_str[:len(fields_str)-1] + ")"
         values_str = values_str[:len(values_str)-1] + ")"
 
         sql = "insert into " + table_name + fields_str + " values" + values_str
-        print(sql)
+        print("orm save():", sql)
         db = MysqlDB()
         return db.insert(sql)
 
@@ -41,10 +41,10 @@ class ORM:
                 values_str += (key + "=" + value + " and ")
         # 拼接查询条件
         values_str = values_str[:len(values_str)-4]
-        print(field_str)
-        print(values_str)
+        print("orm select_one() columns:", field_str)
+        print("orm select_one() values:", values_str)
         sql = "select " + field_str + " from " + table_name + " where " + values_str
-        print(sql)
+        print("orm select_one() sql:", sql)
         db = MysqlDB()
         return db.get_one(sql)
 
@@ -72,9 +72,43 @@ class ORM:
                 else:
                     values_str += (key + "=" + value + " and ")
             values_str = values_str[:len(values_str)-4]
-        print(field_str)
-        print(values_str)
+        print("orm select_all() columns:", field_str)
+        print("orm select_all() values:", values_str)
         sql = "select " + field_str + " from " + table_name + " where " + values_str
-        print(sql)
+        print("orm select_all() sql:", sql)
         db = MysqlDB()
         return db.get_all_list(sql, table_name)
+
+    def update(self, *args, **kwargs):
+        """
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        table_name = self.__class__.__name__.lower()
+        field_str = values_str = ""
+        # 拼接设置值
+        num = 0
+        for field in args:
+            if num % 2 == 0:
+                field_str += (field + "=")
+            else:
+                if isinstance(field, str):
+                    field_str += ("'" + field + "',")
+                else:
+                    field_str += (str(field) + ",")
+            num += 1
+        field_str = field_str[:len(field_str) - 1]
+        print("orm update() columns:", field_str)
+        # 拼接条件
+        for key, value in kwargs.items():
+            if isinstance(value, str):
+                values_str += (key + "='" + value + "' and ")
+            else:
+                values_str += (key + "=" + value + " and ")
+        values_str = values_str[:len(values_str)-4]
+        print("orm update() values:", values_str)
+        sql = "update " + table_name + " set " + field_str + " where " + values_str
+        print("orm update() sql:", sql)
+        db = MysqlDB()
+        return db.update(sql)

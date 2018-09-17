@@ -4,10 +4,11 @@ from datetime import datetime
 
 class User(ORM):
 
-    def __init__(self, username=None, password=None):
+    def __init__(self, username=None, password=None, count=None):
         self.username = username
         self.password = password
         self.create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.count = count
 
 # u = User("sxt", "pwej")
 # print(u.__dict__)
@@ -26,6 +27,9 @@ class User(ORM):
 
 # t = ["name", "pass"]
 # print(tuple(t))
+
+# s = "abc" + 1
+# print(s)
 
 
 class Blog(ORM):

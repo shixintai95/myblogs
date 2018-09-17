@@ -4,32 +4,35 @@ from tornado.web import RequestHandler
 import model
 
 
-# class IndexHandler(RequestHandler):
-#     def get(self, *args, **kwargs):
-#         self.render("index.html")
-
-
 # 登录
 class LoginHandler(RequestHandler):
+
+    def __init__(self, application, request, **kwargs):
+        super().__init__(application, request, **kwargs)
+
     def get(self, *args, **kwargs):
         # 正常登陆情况下，进入home的url
         next = self.get_query_argument("next", "home")
-        flag = self.get_query_argument("flag", "")
-        url = "login?next=%s&flag=%s" % (next, flag)
-        self.render("login/login.html", flag="login", url=url)
+        if next == "/release" or next == "/showblogs":
+            flag = "nologin"
+        else:
+            flag = ""
+        url = "login?next=%s" % next
+        self.render("login/login.html", flag=flag, url=url)
 
     def post(self, *args, **kwargs):
         username = self.get_body_argument("username")
         password = self.get_body_argument("password")
-        user = model.User(username, password)
-        db_password = user.select_one("password", username=username)
+        user = model.User()
+        db_password = user.select_one("password", "count", username=username)
 
         url = "login?next="
         if db_password is not None:
             if password == db_password[0]:
                 self.set_secure_cookie("username", username, expires_days=None)
-                next = self.get_query_argument("next", "home")
-                self.redirect(next)
+                # 设置登录次数
+                user.update("count", db_password[1] + 1, username=username)
+                self.redirect(self.get_query_argument("next", "home"))
             else:
                 self.render("login/login.html", flag="error", url=url)
         else:
@@ -44,7 +47,7 @@ class RegisterHandler(RequestHandler):
     def post(self, *args, **kwargs):
         username = self.get_body_argument("username")
         password = self.get_body_argument("password")
-        user = model.User(username, password)
+        user = model.User(username, password, 1)
         result = user.save()
         if result == 1:
             self.write("注册成功")
@@ -86,7 +89,6 @@ class ReleaseHandler(RequestHandler):
         blog = model.Blog(blog_title, blog_type, blog_content, str(username)[2:-1])
         result = blog.save()
         if result == 1:
-            # self.write("发布成功")
             self.redirect("/showblogs")
         else:
             self.write("发布失败")

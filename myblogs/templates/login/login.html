@@ -9,6 +9,8 @@
     <h3>当前用户不存在！请先<a href="/register">注册</a></h3>
 {% elif flag == "error" %}
     <h3>密码错误</h3>
+{% elif flag == "nologin" %}
+    <h3>未登录！请先登录</h3>
 {% else %}
 
 {% end %}
