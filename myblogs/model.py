@@ -38,6 +38,7 @@ class Blog(ORM):
         self.blog_type = blog_type
         self.blog_content = blog_content
         self.uname = uname
+        self.create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # v = b'admin'
 # m = str(v)

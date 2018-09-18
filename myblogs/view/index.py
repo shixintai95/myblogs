@@ -72,7 +72,9 @@ class LogoutHandler(RequestHandler):
 # 主页
 class HomeHandler(RequestHandler):
     def get(self, *args, **kwargs):
-        self.render("login/home.html", title="主页", username=self.get_secure_cookie("username"))
+        blog = model.Blog()
+        blog_list = blog.select_all()
+        self.render("login/home.html", blog_list=blog_list, title="主页", username=self.get_secure_cookie("username"))
 
 
 # 发布博客
@@ -84,7 +86,7 @@ class ReleaseHandler(RequestHandler):
     # 3.执行方法get_current_user(),若返回true，则进入请求; 否则进入全局配置的地址
     @web.authenticated
     def get(self, *args, **kwargs):
-        self.render("release/release.html", title="发布博客")
+        self.render("release/release.html", title="发布博客", username=self.get_secure_cookie("username"))
 
     def post(self, *args, **kwargs):
         blog_title = self.get_argument("blog_title")
@@ -111,7 +113,7 @@ class ShowBlogsHandler(RequestHandler):
         blog = model.Blog()
         blog_list = blog.select_all(uname=str(username)[2:-1])
         print(blog_list)
-        self.render("release/show.html", blog_list=blog_list, title="查看博客")
+        self.render("release/show.html", blog_list=blog_list, title="查看博客", username=self.get_secure_cookie("username"))
 
     def get_current_user(self):
         cookie = self.get_secure_cookie("username")

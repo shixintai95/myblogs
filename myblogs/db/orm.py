@@ -64,7 +64,7 @@ class ORM:
                 field_str += (field + ",")
             field_str = field_str[:len(field_str)-1]
         if len(kwargs) == 0:
-            values_str = 1
+            values_str = "1"
         else:
             for key, value in kwargs.items():
                 if isinstance(value, str):
@@ -74,7 +74,7 @@ class ORM:
             values_str = values_str[:len(values_str)-4]
         print("orm select_all() columns:", field_str)
         print("orm select_all() values:", values_str)
-        sql = "select " + field_str + " from " + table_name + " where " + values_str
+        sql = "select " + field_str + " from " + table_name + " where " + values_str + " order by create_time desc"
         print("orm select_all() sql:", sql)
         db = MysqlDB()
         return db.get_all_list(sql, table_name)
