@@ -18,10 +18,8 @@
     <!-- Custom styles for this template -->
     <link href="{{static_url('css/theme.css')}}" rel="stylesheet">
   </head>
-
-  <body>
-
-    <!-- Fixed navbar -->
+<body>
+<!-- Fixed navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -35,9 +33,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/home">首页</a></li>
+            <li class="active"><a href="/home">首页</a></li>
             <li><a href="/release">发布博客</a></li>
-            <li class="active"><a href="/showblogs">查看博客</a></li>
+            <li><a href="/showblogs">查看博客</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">{{username}}</a></li>
@@ -46,32 +44,14 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
-    <div class="container theme-showcase" role="main">
-
-        <div class="row">
-        <div class="col-sm-12">
-          <div class="list-group">
-          {% if blog_list %}
-            {% for item in blog_list %}
-            <a href="/bloginfo/{{item['bid']}}" class="list-group-item">
-              <h2 class="list-group-item-heading">{{item["blog_title"]}}</h2>
-              <h4 class="list-group-item-text">发布人：{{item["uname"]}},发布时间：{{item["create_time"]}}</h4>
-              <p class="list-group-item-text">{{item["blog_content"]}}</p>
-            </a>
-            {% end %}
-          {% end %}
-          </div>
-        </div><!-- /.col-sm-4 -->
-      </div>
-    </div>
-
-
-    </div>
+<div class="container theme-showcase" role="main" id="content">
+    <h1>{{blog_tuple[1]}}</h1>
+    <h5><span>发布者：</span>{{blog_tuple[4]}}&nbsp;&nbsp;<span>发布时间：</span>{{blog_tuple[5]}}</h5>
+    <p class="lead">{{blog_tuple[2]}}</p>
+</div>
 
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>
 </html>
-

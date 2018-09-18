@@ -53,7 +53,7 @@
           <div class="list-group">
           {% if blog_list %}
             {% for item in blog_list %}
-            <a href="#" class="list-group-item">
+            <a href="/bloginfo/{{item['bid']}}" class="list-group-item">
               <h2 class="list-group-item-heading">{{item["blog_title"]}}</h2>
               <h4 class="list-group-item-text">发布人：{{item["uname"]}},发布时间：{{item["create_time"]}}</h4>
               <p class="list-group-item-text">{{item["blog_content"]}}</p>

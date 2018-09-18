@@ -53,9 +53,9 @@ class RegisterHandler(RequestHandler):
     def post(self, *args, **kwargs):
         username = self.get_body_argument("username")
         password = self.get_body_argument("password")
-        user = model.User(username, password, 1)
-        result = user.save()
-        if result == 1:
+        if username is not None and password is not None:
+            user = model.User(username, password, 1)
+            user.save()
             self.redirect("/login")
         else:
             self.write("注册失败,请重新注册")
@@ -71,10 +71,15 @@ class LogoutHandler(RequestHandler):
 
 # 主页
 class HomeHandler(RequestHandler):
+    @web.authenticated
     def get(self, *args, **kwargs):
         blog = model.Blog()
         blog_list = blog.select_all()
         self.render("login/home.html", blog_list=blog_list, title="主页", username=self.get_secure_cookie("username"))
+
+    def get_current_user(self):
+        cookie = self.get_secure_cookie("username")
+        return cookie
 
 
 # 发布博客
@@ -118,4 +123,28 @@ class ShowBlogsHandler(RequestHandler):
     def get_current_user(self):
         cookie = self.get_secure_cookie("username")
         return cookie
+
+
+# 查看博客详情
+class BlogInfoHandler(RequestHandler):
+
+    def get(self, bid, *args, **kwargs):
+        blog = model.Blog()
+        blog_tuple = blog.select_one(bid=bid)
+        self.render("release/blogInfo.html", username=self.get_secure_cookie("username"), title=blog_tuple[1], blog_tuple=blog_tuple)
+
+
+# 验证用户是否存在
+class UserCheckHandler(RequestHandler):
+    def get(self, *args, **kwargs):
+        username = self.get_query_argument("username")
+        print(username)
+        u = model.User()
+        uname = u.select_all(username=username)
+        if len(uname) > 0:
+            self.write({"data": 0})
+        else:
+            self.write({"data": 1})
+
+
 

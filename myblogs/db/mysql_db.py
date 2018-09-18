@@ -60,7 +60,7 @@ class MysqlDB:
         else:
             # 查询表头字段
             field_sql = "select column_name from information_schema.columns " \
-                        "where table_name='%s' and table_schema='%s'" % (self.dbName, table_name)
+                        "where table_name='%s' and table_schema='%s'" % (table_name, self.dbName)
             field = self.get_all_tuple(field_sql)
             for item in field:
                 field_list.append(item[0])

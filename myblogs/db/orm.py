@@ -30,17 +30,23 @@ class ORM:
         """
         table_name = self.__class__.__name__.lower()
         field_str = values_str = ""
-        for field in args:
-            field_str += (field + ",")
-        # 拼接字段名
-        field_str = field_str[:len(field_str)-1]
-        for key, value in kwargs.items():
-            if isinstance(value, str):
-                values_str += (key + "='" + value + "' and ")
-            else:
-                values_str += (key + "=" + value + " and ")
-        # 拼接查询条件
-        values_str = values_str[:len(values_str)-4]
+        if len(args) == 0:
+            field_str = "*"
+        else:
+            for field in args:
+                field_str += (field + ",")
+            # 拼接字段名
+            field_str = field_str[:len(field_str)-1]
+        if len(kwargs) == 0:
+            values_str = "1"
+        else:
+            for key, value in kwargs.items():
+                if isinstance(value, str):
+                    values_str += (key + "='" + value + "' and ")
+                else:
+                    values_str += (key + "=" + value + " and ")
+            # 拼接查询条件
+            values_str = values_str[:len(values_str)-4]
         print("orm select_one() columns:", field_str)
         print("orm select_one() values:", values_str)
         sql = "select " + field_str + " from " + table_name + " where " + values_str
@@ -74,7 +80,7 @@ class ORM:
             values_str = values_str[:len(values_str)-4]
         print("orm select_all() columns:", field_str)
         print("orm select_all() values:", values_str)
-        sql = "select " + field_str + " from " + table_name + " where " + values_str + " order by create_time desc"
+        sql = "select " + field_str + " from " + table_name + " where " + values_str
         print("orm select_all() sql:", sql)
         db = MysqlDB()
         return db.get_all_list(sql, table_name)
